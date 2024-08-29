@@ -1,7 +1,7 @@
 package net.vitacraft.api;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.vitacraft.api.addons.SlashCommandAddon;
-import net.vitacraft.api.config.ConfigUtil;
+import net.vitacraft.api.config.ConfigLoader;
 import net.vitacraft.api.info.ModuleInfo;
 import net.vitacraft.api.info.StartUpPriority;
 import org.simpleyaml.configuration.ConfigurationSection;
@@ -15,17 +15,17 @@ public class MBModule {
     private BotEnvironment botEnvironment;
     private final ModuleInfo moduleInfo;
     private final Logger logger;
-    private final ConfigUtil config;
+    private final ConfigLoader configLoader;
 
     public MBModule(){
         moduleInfo = retrieveModuleInfo();
         logger = LoggerFactory.getLogger(moduleInfo.getName());
-        config = generateConfig();
+        configLoader = generateConfig();
     }
 
     private ModuleInfo retrieveModuleInfo() {
-        ConfigUtil configUtil = new ConfigUtil(this.getClass(), "module.yml");
-        ConfigurationSection config = configUtil.getConfig();
+        ConfigLoader configLoader = new ConfigLoader(this.getClass(), "module.yml");
+        ConfigurationSection config = configLoader.getConfig();
         String name = config.getString("name");
         String version = config.getString("version");
         String description = config.getString("description");
@@ -41,14 +41,14 @@ public class MBModule {
         return new ModuleInfo(name, version, description, author, startUpPriority);
     }
 
-    private ConfigUtil generateConfig() {
+    private ConfigLoader generateConfig() {
         try {
             Path configDir = Paths.get(moduleInfo.getName());
             Files.createDirectories(configDir); // Ensure the directory exists
             String configFilePath = configDir.resolve("config.yml").toString();
-            ConfigUtil configUtil = new ConfigUtil(configFilePath);
-            configUtil.save();
-            return configUtil;
+            ConfigLoader configLoader = new ConfigLoader(configFilePath);
+            configLoader.save();
+            return configLoader;
         } catch (Exception e) {
             logger.error("Failed to generate configuration", e);
         }
@@ -95,7 +95,7 @@ public class MBModule {
         return logger;
     }
 
-    public ConfigUtil getConfig() {
-        return config;
+    public ConfigLoader getConfigLoader() {
+        return configLoader;
     }
 }

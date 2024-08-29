@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.sharding.ShardManager;
 import net.vitacraft.api.BotEnvironment;
 import net.vitacraft.api.MBModule;
 import net.vitacraft.api.PrimitiveBotEnvironment;
-import net.vitacraft.api.config.ConfigUtil;
+import net.vitacraft.api.config.ConfigLoader;
 import net.vitacraft.exceptions.BotStartupException;
 import net.vitacraft.manager.CommandManager;
 import org.simpleyaml.configuration.ConfigurationSection;
@@ -87,9 +87,9 @@ public class MoBot {
     }
 
     private DefaultShardManagerBuilder getBuilder(){
-        ConfigUtil configUtil = new ConfigUtil("./bot.yml");
-        configUtil.save();
-        ConfigurationSection config = configUtil.getConfig();
+        ConfigLoader configLoader = new ConfigLoader("./bot.yml");
+        configLoader.save();
+        ConfigurationSection config = configLoader.getConfig();
         String token = config.getString("token");
 
         return DefaultShardManagerBuilder.createDefault(token);

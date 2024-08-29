@@ -8,19 +8,19 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 
 /**
- * The ConfigUtil class provides utility methods for loading, saving, and managing YAML configuration files.
+ * The ConfigLoader class provides utility methods for loading, saving, and managing YAML configuration files.
  */
-public class ConfigUtil {
+public class ConfigLoader {
     private final File file;
     private final FileConfiguration config;
 
     /**
-     * Constructs a ConfigUtil instance that loads a configuration file from within a JAR.
+     * Constructs a ConfigLoader instance that loads a configuration file from within a JAR.
      *
      * @param moduleClass the class from the module JAR, used to load resources.
      * @param resourceName the name of the resource file (e.g., "module.yml").
      */
-    public ConfigUtil(Class<?> moduleClass, String resourceName) {
+    public ConfigLoader(Class<?> moduleClass, String resourceName) {
         this.file = null; // No file associated when loading from a resource within the JAR
         try (InputStream resourceStream = moduleClass.getClassLoader().getResourceAsStream(resourceName)) {
             if (resourceStream == null) {
@@ -33,11 +33,11 @@ public class ConfigUtil {
     }
 
     /**
-     * Constructs a ConfigUtil instance with the specified file path.
+     * Constructs a ConfigLoader instance with the specified file path.
      *
      * @param path the path to the configuration file.
      */
-    public ConfigUtil(String path) {
+    public ConfigLoader(String path) {
         this.file = new File(path);
         try {
             if (!this.file.exists()) {
