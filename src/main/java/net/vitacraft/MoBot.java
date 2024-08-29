@@ -18,11 +18,25 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * The main class for initializing and managing the MoBot application.
+ * <p>
+ * This class handles the initialization of the bot, loading of modules,
+ * setting up the bot environment, and managing the lifecycle of the bot.
+ * </p>
+ */
 public class MoBot {
     private final List<MBModule> modules = new ArrayList<>();
     private final BotEnvironment botEnvironment;
     private final Logger logger;
 
+    /**
+     * Constructs and initializes the MoBot instance.
+     * <p>
+     * This constructor initializes the logger, sets up the bot environment,
+     * loads and enables modules, and starts the bot.
+     * </p>
+     */
     public MoBot() {
         //Initialize the Logger
         logger = LoggerFactory.getLogger("MoBot");
@@ -86,6 +100,11 @@ public class MoBot {
         }
     }
 
+    /**
+     * Creates a {@link DefaultShardManagerBuilder} using the bot token from the configuration file.
+     *
+     * @return a {@link DefaultShardManagerBuilder} configured with the bot token
+     */
     private DefaultShardManagerBuilder getBuilder(){
         ConfigLoader configLoader = new ConfigLoader("./bot.yml");
         configLoader.save();
@@ -95,20 +114,32 @@ public class MoBot {
         return DefaultShardManagerBuilder.createDefault(token);
     }
 
+    /**
+     * Initializes and starts the bot, creating a {@link ShardManager}.
+     *
+     * @param builder the {@link DefaultShardManagerBuilder} used to create the {@link ShardManager}
+     * @return the created {@link ShardManager}
+     * @throws BotStartupException if the bot could not be started
+     */
     private ShardManager enableBot(DefaultShardManagerBuilder builder) throws BotStartupException {
         ShardManager shardManager;
 
         try {
             shardManager = builder.build();
         } catch (IllegalArgumentException e) {
-            throw new BotStartupException("Invalid token. Disabling...");
+            throw new BotStartupException("The provided Discord Bot-Token is invalid. Check the bot.yml file.", e);
         } catch (Exception e) {
-            throw new BotStartupException("An unknown error occurred while setting up the shard manager.");
+            throw new BotStartupException("An unknown error occurred while setting up the shard manager.", e);
         }
 
         return shardManager;
     }
 
+    /**
+     * Loads all modules from the "modules" directory.
+     *
+     * @return a list of loaded {@link MBModule} instances
+     */
     private List<MBModule> loadModulesFromDirectory() {
         List<MBModule> modules = new ArrayList<>();
         File modulesDir = new File("modules");
@@ -131,6 +162,12 @@ public class MoBot {
         return modules;
     }
 
+    /**
+     * Loads modules from a given {@link URLClassLoader}.
+     *
+     * @param classLoader the {@link URLClassLoader} to load classes from
+     * @return a list of loaded {@link MBModule} instances
+     */
     private List<MBModule> loadModulesFromClassLoader(URLClassLoader classLoader) {
         List<MBModule> modules = new ArrayList<>();
         File modulesDir = new File("modules");
@@ -154,6 +191,14 @@ public class MoBot {
         return modules;
     }
 
+    /**
+     * Retrieves all classes from a JAR file.
+     *
+     * @param jarFile the JAR file to extract classes from
+     * @param classLoader the {@link URLClassLoader} to load classes
+     * @return a list of classes found in the JAR file
+     * @throws Exception if an error occurs while reading the JAR file or loading classes
+     */
     private List<Class<?>> getClassesFromJar(File jarFile, URLClassLoader classLoader) throws Exception {
         List<Class<?>> classes = new ArrayList<>();
         try (java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile)) {
@@ -174,6 +219,9 @@ public class MoBot {
         return classes;
     }
 
+    /**
+     * Creates the "modules" directory if it does not already exist.
+     */
     private void createModulesDirectory() {
         File modulesDir = new File("modules");
         if (!modulesDir.exists()) {
@@ -186,6 +234,13 @@ public class MoBot {
         }
     }
 
+    /**
+     * Shuts down the bot and performs cleanup tasks.
+     * <p>
+     * This method calls the {@link MBModule#onDisable()} method on all modules,
+     * shuts down the {@link ShardManager}, and then calls {@link MBModule#postDisable()}.
+     * </p>
+     */
     public void shutdown() {
         for (MBModule module : modules) {
             module.onDisable();
@@ -200,6 +255,14 @@ public class MoBot {
         }
     }
 
+    /**
+     * The main method to start the MoBot application.
+     * <p>
+     * Initializes the MoBot instance and sets up a shutdown hook to perform cleanup tasks.
+     * </p>
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         MoBot bot = new MoBot();
         Runtime.getRuntime().addShutdownHook(new Thread(bot::shutdown));
