@@ -7,47 +7,52 @@ import net.vitacraft.api.info.StartUpPriority;
 import org.simpleyaml.configuration.ConfigurationSection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class MBModule {
     private BotEnvironment botEnvironment;
     private final ModuleInfo moduleInfo;
     private final Logger logger;
-    private final ConfigurationSection config;
+    private final ConfigUtil config;
 
     public MBModule(){
         moduleInfo = retrieveModuleInfo();
-        config = generateConfig();
         logger = LoggerFactory.getLogger(moduleInfo.getName());
+        config = generateConfig();
     }
 
     private ModuleInfo retrieveModuleInfo() {
+        ConfigUtil configUtil = new ConfigUtil(this.getClass(), "module.yml");
+        ConfigurationSection config = configUtil.getConfig();
+        String name = config.getString("name");
+        String version = config.getString("version");
+        String description = config.getString("description");
+        String author = config.getString("author");
+        StartUpPriority startUpPriority;
+
         try {
-            ConfigUtil configUtil = new ConfigUtil("./module.yml");
-            configUtil.save();
-
-            ConfigurationSection config = configUtil.getConfig();
-            String name = config.getString("name");
-            String version = config.getString("version");
-            String description = config.getString("description");
-            String author = config.getString("author");
-            StartUpPriority startUpPriority;
-
-            try {
-                startUpPriority = StartUpPriority.valueOf(config.getString("priority"));
-            } catch (IllegalArgumentException e) {
-                startUpPriority = StartUpPriority.DEFAULT;
-            }
-
-            return new ModuleInfo(name, version, description, author, startUpPriority);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load module info", e);
+            startUpPriority = StartUpPriority.valueOf(config.getString("priority"));
+        } catch (IllegalArgumentException e) {
+            startUpPriority = StartUpPriority.DEFAULT;
         }
+
+        return new ModuleInfo(name, version, description, author, startUpPriority);
     }
 
-    private ConfigurationSection generateConfig() {
-
+    private ConfigUtil generateConfig() {
+        try {
+            Path configDir = Paths.get(moduleInfo.getName());
+            Files.createDirectories(configDir); // Ensure the directory exists
+            String configFilePath = configDir.resolve("config.yml").toString();
+            ConfigUtil configUtil = new ConfigUtil(configFilePath);
+            configUtil.save();
+            return configUtil;
+        } catch (Exception e) {
+            logger.error("Failed to generate configuration", e);
+        }
+        return null;
     }
 
     public void preEnable(PrimitiveBotEnvironment primitiveBotEnvironment){
@@ -88,5 +93,9 @@ public class MBModule {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public ConfigUtil getConfig() {
+        return config;
     }
 }
