@@ -35,8 +35,7 @@ Each module is loaded independently and can contain its own configuration, makin
 - [ ] Convenient Addons
    - [x] Slash Command Addon
    - [ ] ????
-- [ ] Config
-  -  []
+- [x] Module Configs
 
 
 ## Features
