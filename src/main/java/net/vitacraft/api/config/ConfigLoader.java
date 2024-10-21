@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * The ConfigLoader class provides utility methods for loading, saving, and managing YAML configuration files.
@@ -29,6 +30,31 @@ public class ConfigLoader {
             this.config = YamlConfiguration.loadConfiguration(new InputStreamReader(resourceStream));
         } catch (IOException e) {
             throw new RuntimeException("Failed to load resource " + resourceName + " from the JAR.", e);
+        }
+    }
+
+    /**
+     * Constructs a ConfigLoader instance that loads a configuration file from within a JAR and saves it to a specified path.
+     *
+     * @param moduleClass the class from the module JAR, used to load resources.
+     * @param resourceName the name of the resource file (e.g., "module.yml").
+     * @param path the path to save the configuration file.
+     */
+    public ConfigLoader(Class<?> moduleClass, String resourceName, Path path) {
+        this.file = new File(path + "/" + resourceName);
+
+        try {
+            if (!this.file.exists()) {
+                InputStream resourceStream = moduleClass.getClassLoader().getResourceAsStream(this.file.getName());
+                if (resourceStream != null) {
+                    Files.copy(resourceStream, this.file.toPath());
+                } else {
+                    this.file.createNewFile();
+                }
+            }
+            this.config = YamlConfiguration.loadConfiguration(this.file);
+        }  catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -60,7 +86,8 @@ public class ConfigLoader {
     public void save() {
         try {
             this.config.save(this.file);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+           System.out.println("Failed to save configuration file." + e);
         }
     }
 

@@ -67,10 +67,9 @@ public class MBModule {
      */
     private ConfigLoader generateConfig() {
         try {
-            Path configDir = Paths.get("module" + moduleInfo.name());
-            Files.createDirectories(configDir); // Ensure the directory exists
-            String configFilePath = configDir.resolve("config.yml").toString();
-            ConfigLoader configLoader = new ConfigLoader(configFilePath);
+            Path configDir = Paths.get("modules" + "/" + moduleInfo.name());
+            Files.createDirectories(configDir);
+            ConfigLoader configLoader = new ConfigLoader(this.getClass(), "config.yml", configDir);
             configLoader.save();
             return configLoader;
         } catch (Exception e) {

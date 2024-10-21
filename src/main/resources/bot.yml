@@ -16,3 +16,6 @@
 # https://discord.gg/jVEt44wMQz
 
 token: 'TOKEN_HERE'
+
+# Need to enable intents? Place them here.
+gateway-intents: []

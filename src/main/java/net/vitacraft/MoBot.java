@@ -1,5 +1,6 @@
 package net.vitacraft;
 
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.vitacraft.api.BotEnvironment;
@@ -112,8 +113,15 @@ public class MoBot {
         configLoader.save();
         ConfigurationSection config = configLoader.getConfig();
         String token = config.getString("token");
+        List<String> gateWayIntents = config.getStringList("gateway-intents");
 
-        return DefaultShardManagerBuilder.createDefault(token);
+        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
+
+        for (String intent : gateWayIntents) {
+            builder.enableIntents(GatewayIntent.valueOf(intent));
+        }
+
+        return builder;
     }
 
     /**
