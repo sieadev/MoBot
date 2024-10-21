@@ -33,7 +33,7 @@ public class MBModule {
      */
     public MBModule(){
         moduleInfo = retrieveModuleInfo();
-        logger = LoggerFactory.getLogger(moduleInfo.getName());
+        logger = LoggerFactory.getLogger(moduleInfo.name());
         configLoader = generateConfig();
     }
 
@@ -67,7 +67,7 @@ public class MBModule {
      */
     private ConfigLoader generateConfig() {
         try {
-            Path configDir = Paths.get(moduleInfo.getName());
+            Path configDir = Paths.get("module" + moduleInfo.name());
             Files.createDirectories(configDir); // Ensure the directory exists
             String configFilePath = configDir.resolve("config.yml").toString();
             ConfigLoader configLoader = new ConfigLoader(configFilePath);

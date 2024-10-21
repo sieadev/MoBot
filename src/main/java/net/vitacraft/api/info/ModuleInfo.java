@@ -15,15 +15,8 @@ package net.vitacraft.api.info;
  * Example usage:
  * ModuleInfo moduleInfo = new ModuleInfo("ExampleModule", "1.0", "An example module", "John Doe", StartUpPriority.HIGH);
  * </pre>
- *
  */
-public class ModuleInfo {
-    private final String name;
-    private final String version;
-    private final String description;
-    private final String author;
-    private final StartUpPriority priority;
-
+public record ModuleInfo(String name, String version, String description, String author, StartUpPriority priority) {
     /**
      * Constructs a new {@code ModuleInfo} object with the specified name, version,
      * description, author, and startup priority.
@@ -34,56 +27,6 @@ public class ModuleInfo {
      * @param author      the author of the module
      * @param priority    the startup priority of the module
      */
-    public ModuleInfo(final String name, final String version, final String description, final String author, final StartUpPriority priority) {
-        this.name = name;
-        this.version = version;
-        this.description = description;
-        this.author = author;
-        this.priority = priority;
-    }
-
-    /**
-     * Returns the name of the module.
-     *
-     * @return the name of the module
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the version of the module.
-     *
-     * @return the version of the module
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    /**
-     * Returns a brief description of the module.
-     *
-     * @return the description of the module
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Returns the author of the module.
-     *
-     * @return the author of the module
-     */
-    public String getAuthor() {
-        return author;
-    }
-
-    /**
-     * Returns the startup priority of the module.
-     *
-     * @return the startup priority of the module
-     */
-    public StartUpPriority getPriority() {
-        return priority;
+    public ModuleInfo {
     }
 }

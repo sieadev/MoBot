@@ -1,1 +1,18 @@
-token: ''
+#######################################################################
+# +-----------------------------------------------------------------+ #
+# |                              MoBot                              | #
+# |                     Made with <3 by sieadev                     | #
+# +-----------------------------------------------------------------+ #
+#######################################################################
+
+# Welcome to MoBot! This is the main configuration file for the bot.
+# To get started with the bot, you need to create a bot application on
+# Discord, and then fill in the token below.
+
+# You can create a bot application here:
+# https://discord.com/developers/applications
+
+# If you have any questions or need help, feel free to join the support server:
+# https://discord.gg/jVEt44wMQz
+
+token: 'TOKEN_HERE'

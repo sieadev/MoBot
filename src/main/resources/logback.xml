@@ -10,7 +10,7 @@
     <!-- Customize the logging pattern to replace thread name with "MoBot" -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[%date{HH:mm:ss.SSS}] [MoBot] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>[%date{HH:mm:ss}] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
