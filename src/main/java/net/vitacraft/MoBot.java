@@ -62,14 +62,16 @@ public class MoBot {
         modules.sort(Comparator.comparing(module -> module.getModuleInfo().priority()));
 
         //Call the preEnable method on all Modules
+        List<String> enabledModules = new ArrayList<>();
         for (MBModule module : modules) {
             try {
                 module.preEnable(primitiveBotEnvironment);
-                logger.info("Pre-enabled module: {}", module.getModuleInfo().name());
+                enabledModules.add(module.getModuleInfo().name());
             } catch (Exception e) {
                 logger.error(e.getMessage());
             }
         }
+        logger.info("Pre-enabled modules: {}", enabledModules);
 
         //Start the bot and construct the ShardManager
         ShardManager shardManager;
@@ -180,48 +182,43 @@ public class MoBot {
      */
     private List<MBModule> loadModulesFromClassLoader(URLClassLoader classLoader) {
         List<MBModule> modules = new ArrayList<>();
-        File modulesDir = new File("modules");
-        File[] jarFiles = modulesDir.listFiles((dir, name) -> name.endsWith(".jar"));
-
-        if (jarFiles != null) {
-            for (File jarFile : jarFiles) {
-                try (URLClassLoader tempClassLoader = new URLClassLoader(new URL[]{jarFile.toURI().toURL()}, classLoader)) {
-                    for (Class<?> cls : getClassesFromJar(jarFile, tempClassLoader)) {
-                        if (MBModule.class.isAssignableFrom(cls) && !cls.isInterface()) {
-                            MBModule module = (MBModule) cls.getDeclaredConstructor().newInstance();
-                            modules.add(module);
-                            logger.info("Loaded module: {}", cls.getName());
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.error("Failed to load classes from JAR file: {}", jarFile.getName(), e);
+        try {
+            for (Class<?> cls : getClassesFromClassLoader(classLoader)) {
+                if (MBModule.class.isAssignableFrom(cls) && !cls.isInterface()) {
+                    MBModule module = (MBModule) cls.getDeclaredConstructor().newInstance();
+                    modules.add(module);
+                    logger.info("Loaded module: {}", module.getModuleInfo().name());
                 }
             }
+        } catch (Exception e) {
+            logger.error("Failed to load classes from class loader", e);
         }
         return modules;
     }
 
     /**
-     * Retrieves all classes from a JAR file.
+     * Retrieves all classes from a class loader.
      *
-     * @param jarFile the JAR file to extract classes from
      * @param classLoader the {@link URLClassLoader} to load classes
-     * @return a list of classes found in the JAR file
-     * @throws Exception if an error occurs while reading the JAR file or loading classes
+     * @return a list of classes found in the class loader
+     * @throws Exception if an error occurs while loading classes
      */
-    private List<Class<?>> getClassesFromJar(File jarFile, URLClassLoader classLoader) throws Exception {
+    private List<Class<?>> getClassesFromClassLoader(URLClassLoader classLoader) throws Exception {
         List<Class<?>> classes = new ArrayList<>();
-        try (java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile)) {
-            java.util.Enumeration<java.util.jar.JarEntry> entries = jar.entries();
-            while (entries.hasMoreElements()) {
-                java.util.jar.JarEntry entry = entries.nextElement();
-                if (entry.getName().endsWith(".class")) {
-                    String className = entry.getName().replace("/", ".").replace(".class", "");
-                    try {
-                        Class<?> cls = classLoader.loadClass(className);
-                        classes.add(cls);
-                    } catch (ClassNotFoundException e) {
-                        logger.error("Class not found: {}", className, e);
+        for (URL url : classLoader.getURLs()) {
+            File jarFile = new File(url.toURI());
+            try (java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile)) {
+                java.util.Enumeration<java.util.jar.JarEntry> entries = jar.entries();
+                while (entries.hasMoreElements()) {
+                    java.util.jar.JarEntry entry = entries.nextElement();
+                    if (entry.getName().endsWith(".class")) {
+                        String className = entry.getName().replace("/", ".").replace(".class", "");
+                        try {
+                            Class<?> cls = classLoader.loadClass(className);
+                            classes.add(cls);
+                        } catch (ClassNotFoundException e) {
+                            logger.error("Class not found: {}", className, e);
+                        }
                     }
                 }
             }

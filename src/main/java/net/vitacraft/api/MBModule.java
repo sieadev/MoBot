@@ -23,7 +23,7 @@ public class MBModule {
     private BotEnvironment botEnvironment;
     private final ModuleInfo moduleInfo;
     private final Logger logger;
-    private final ConfigLoader configLoader;
+    private final ConfigLoader defaultConfig;
 
     /**
      * Constructs a new {@link MBModule} instance.
@@ -34,7 +34,7 @@ public class MBModule {
     public MBModule(){
         moduleInfo = retrieveModuleInfo();
         logger = LoggerFactory.getLogger(moduleInfo.name());
-        configLoader = generateConfig();
+        defaultConfig = generateConfig("config.yml");
     }
 
     /**
@@ -65,11 +65,11 @@ public class MBModule {
      *
      * @return a {@link ConfigLoader} instance for the module's configuration
      */
-    private ConfigLoader generateConfig() {
+    private ConfigLoader generateConfig(String resourceName) {
         try {
             Path configDir = Paths.get("modules" + "/" + moduleInfo.name());
             Files.createDirectories(configDir);
-            ConfigLoader configLoader = new ConfigLoader(this.getClass(), "config.yml", configDir);
+            ConfigLoader configLoader = new ConfigLoader(this.getClass(), resourceName, configDir);
             configLoader.save();
             return configLoader;
         } catch (Exception e) {
@@ -185,6 +185,16 @@ public class MBModule {
      * @return the {@link ConfigLoader} instance
      */
     public ConfigLoader getConfigLoader() {
-        return configLoader;
+        return defaultConfig;
+    }
+
+    /**
+     * Returns a {@link ConfigLoader} instance for the specified resource file.
+     *
+     * @param resourceName the name of the resource file (e.g., "options.yml").
+     * @return a {@link ConfigLoader} instance for the specified resource file
+     */
+    public ConfigLoader getConfigLoader(String resourceName) {
+        return generateConfig(resourceName);
     }
 }
