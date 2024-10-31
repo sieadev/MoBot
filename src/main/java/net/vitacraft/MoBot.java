@@ -98,7 +98,7 @@ public class MoBot {
             module.setBotEnvironment(botEnvironment);
             try {
                 module.onEnable();
-                logger.info("Successfully Enabled module {}", module.getModuleInfo().name());
+                logger.info("Successfully enabled module: {}", module.getModuleInfo().name());
             } catch (Exception e) {
                 logger.error(e.getMessage());
             }
@@ -281,7 +281,7 @@ public class MoBot {
         ConsoleUtil.print("#77DD77 |  \\/  | ___ | __ )  ___ | |_    #FFFFFF-  Vitacraft Development 2024");
         ConsoleUtil.print("#77DD77 | |\\/| |/ _ \\|  _ \\ / _ \\| __|   #FFFFFF-  Version: " + getClass().getPackage().getImplementationVersion());
         ConsoleUtil.print("#77DD77 | |  | | (_) | |_) | (_) | |_    #FFFFFF-  Host: " + System.getProperty("os.name"));
-        ConsoleUtil.print("#77DD77 |_|  |_|\\___/|____/ \\___/ \\__|   #FFFFFF-  Memory: " + Runtime.getRuntime().maxMemory() / (1024 * 1024));
+        ConsoleUtil.print("#77DD77 |_|  |_|\\___/|____/ \\___/ \\__|   #FFFFFF-  Memory: " + ( Runtime.getRuntime().maxMemory() / (1024 * 1024) - Runtime.getRuntime().freeMemory() / (1024 * 1024)) + "/" + Runtime.getRuntime().maxMemory() / (1024 * 1024));
         ConsoleUtil.print("  ");
         ConsoleUtil.print("Welcome to the #77DD77MoBot CLI#FFFFFF. Type 'help' to see available commands.");
         ConsoleUtil.print("  ");
