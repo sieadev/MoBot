@@ -1,5 +1,6 @@
 package net.vitacraft;
 
+import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -7,9 +8,11 @@ import net.vitacraft.api.BotEnvironment;
 import net.vitacraft.api.MBModule;
 import net.vitacraft.api.PrimitiveBotEnvironment;
 import net.vitacraft.api.config.ConfigLoader;
+import net.vitacraft.api.console.Console;
+import net.vitacraft.api.console.ConsoleCommand;
 import net.vitacraft.exceptions.BotStartupException;
 import net.vitacraft.manager.CommandManager;
-import net.vitacraft.utils.ConsoleUtil;
+import net.vitacraft.api.console.ConsoleUtil;
 import org.simpleyaml.configuration.ConfigurationSection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,7 @@ public class MoBot {
     private final List<MBModule> modules = new ArrayList<>();
     private final BotEnvironment botEnvironment;
     private final Logger logger;
+    private Console console;
 
     /**
      * Constructs and initializes the MoBot instance.
@@ -40,7 +44,7 @@ public class MoBot {
      * </p>
      */
     public MoBot() {
-        generateTitleAscii();
+        ConsoleUtil.clearConsole();
 
         //Initialize the Logger
         logger = LoggerFactory.getLogger("MoBot");
@@ -80,7 +84,7 @@ public class MoBot {
             logger.info("Successfully enabled shard manager");
         } catch (BotStartupException e) {
             botEnvironment = null;
-            logger.error("Bot startup failed", e);
+            logger.error("Bot startup failed: " + e.getMessage());
             return;
         }
 
@@ -98,11 +102,14 @@ public class MoBot {
             module.setBotEnvironment(botEnvironment);
             try {
                 module.onEnable();
-                logger.info("Successfully enabled module: {}", module.getModuleInfo().name());
+                logger.info("Successfully Enabled module {}", module.getModuleInfo().name());
             } catch (Exception e) {
                 logger.error(e.getMessage());
             }
         }
+
+        //Initialize the Console
+        console = new Console(this);
     }
 
     /**
@@ -138,7 +145,7 @@ public class MoBot {
 
         try {
             shardManager = builder.build();
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidTokenException e) {
             throw new BotStartupException("The provided Discord Bot-Token is invalid. Check the bot.yml file.");
         } catch (Exception e) {
             throw new BotStartupException("An unknown error occurred while setting up the shard manager.", e);
@@ -249,17 +256,40 @@ public class MoBot {
      * </p>
      */
     public void shutdown() {
+        logger.info("Shutting down MoBot...");
+
         for (MBModule module : modules) {
             module.onDisable();
         }
 
         if (botEnvironment != null && botEnvironment.getShardManager() != null) {
             botEnvironment.getShardManager().shutdown();
+            logger.info("Shard manager has been shut down.");
         }
 
         for (MBModule module : modules) {
             module.postDisable();
         }
+
+        logger.info("See you soon!.");
+    }
+
+    /**
+     * Returns the {@link Logger} instance used by the bot.
+     *
+     * @return the {@link Logger} instance
+     */
+    public Logger getLogger() {
+        return logger;
+    }
+
+    /**
+     * Returns the {@link Console} instance used by the bot.
+     *
+     * @return the {@link Console} instance
+     */
+    public Console getConsole() {
+        return console;
     }
 
     /**
@@ -273,17 +303,5 @@ public class MoBot {
     public static void main(String[] args) {
         MoBot bot = new MoBot();
         Runtime.getRuntime().addShutdownHook(new Thread(bot::shutdown));
-    }
-
-    public void generateTitleAscii(){
-        ConsoleUtil.clearConsole();
-        ConsoleUtil.print("#77DD77  __  __       ____        _   ");
-        ConsoleUtil.print("#77DD77 |  \\/  | ___ | __ )  ___ | |_    #FFFFFF-  Vitacraft Development 2024");
-        ConsoleUtil.print("#77DD77 | |\\/| |/ _ \\|  _ \\ / _ \\| __|   #FFFFFF-  Version: " + getClass().getPackage().getImplementationVersion());
-        ConsoleUtil.print("#77DD77 | |  | | (_) | |_) | (_) | |_    #FFFFFF-  Host: " + System.getProperty("os.name"));
-        ConsoleUtil.print("#77DD77 |_|  |_|\\___/|____/ \\___/ \\__|   #FFFFFF-  Memory: " + ( Runtime.getRuntime().maxMemory() / (1024 * 1024) - Runtime.getRuntime().freeMemory() / (1024 * 1024)) + "/" + Runtime.getRuntime().maxMemory() / (1024 * 1024));
-        ConsoleUtil.print("  ");
-        ConsoleUtil.print("Welcome to the #77DD77MoBot CLI#FFFFFF. Type 'help' to see available commands.");
-        ConsoleUtil.print("  ");
     }
 }
