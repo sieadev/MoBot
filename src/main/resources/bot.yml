@@ -17,5 +17,8 @@
 
 token: 'TOKEN_HERE'
 
-# Need to enable intents? Place them here.
+# Need to enable gateway intents? Place them here.
+# To find out more about intents, visit:
+# https://discord.com/developers/docs/events/gateway#gateway-intents
+
 gateway-intents: []

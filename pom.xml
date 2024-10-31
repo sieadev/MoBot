@@ -83,7 +83,6 @@
                     <archive>
                         <manifestEntries>
                             <Main-Class>net.vitacraft.MoBot</Main-Class>
-                            <Implementation-Version>${project.version}</Implementation-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>
