@@ -63,5 +63,6 @@ public class Console {
         registerCommand("shutdown", args -> {
             System.exit(0);
         });
+        registerCommand("stop", args -> { System.exit(0); });
     }
 }
