@@ -17,6 +17,7 @@ public class Console {
         this.moBot = moBot;
         this.logger = moBot.getLogger();
         registerDefaults();
+        logger.info("Registered {} CLI-commands", commands.size());
     }
 
     private void listenForCommands() {
@@ -38,7 +39,6 @@ public class Console {
 
     public void registerCommand(String name, ConsoleCommand command) {
         commands.put(name, command);
-        logger.info("Registered command: {}", name);
     }
 
     public void dispatchCommand(String name, String[] args) {
@@ -57,12 +57,8 @@ public class Console {
                 logger.info(" - {}", command);
             }
         });
-        registerCommand("clear", args -> {
-            ConsoleUtil.clearConsole();
-        });
-        registerCommand("shutdown", args -> {
-            System.exit(0);
-        });
-        registerCommand("stop", args -> { System.exit(0); });
+        registerCommand("clear", args -> ConsoleUtil.clearConsole());
+        registerCommand("shutdown", args -> System.exit(0));
+        registerCommand("stop", args -> System.exit(0));
     }
 }
