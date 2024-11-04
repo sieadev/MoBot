@@ -20,6 +20,13 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <repository>
+            <id>MoBotAPI</id>
+            <url>https://maven.radsteve.net/MoBotAPI</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.github.Carleslc.Simple-YAML</groupId>
