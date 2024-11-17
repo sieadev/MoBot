@@ -23,7 +23,7 @@
     <distributionManagement>
         <repository>
             <id>MoBotAPI</id>
-            <url>https://maven.radsteve.net/MoBotAPI</url>
+            <url>https://maven.radsteve.net/public</url>
         </repository>
     </distributionManagement>
 
