@@ -81,6 +81,20 @@ public class ConfigLoader {
     }
 
     /**
+     * Constructs a ConfigLoader instance with the specified InputStream.
+     *
+     * @param inputStream the InputStream to the configuration file.
+     */
+    public ConfigLoader(InputStream inputStream) {
+        try {
+            this.file = null; // No file associated when loading from an InputStream
+            this.config = YamlConfiguration.loadConfiguration(new InputStreamReader(inputStream));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Saves the configuration to the file.
      */
     public void save() {
