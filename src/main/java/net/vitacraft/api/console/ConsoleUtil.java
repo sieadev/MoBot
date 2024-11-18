@@ -24,7 +24,7 @@ public class ConsoleUtil {
         } catch (final Exception e) {
             // manual goofy clear
             for(int i=0; i<300; i++){
-                System.out.println("");
+                System.out.println();
             }
         }
         generateTitleAscii();

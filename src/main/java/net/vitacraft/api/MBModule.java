@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Represents a module within the bot,
@@ -48,7 +49,8 @@ public class MBModule {
         String name = config.getString("name");
         String version = config.getString("version");
         String description = config.getString("description");
-        String author = config.getString("author");
+        List<String> authors = config.getStringList("authors");
+        List<String> dependencies = config.getStringList("dependencies");
         StartUpPriority startUpPriority;
 
         try {
@@ -57,7 +59,7 @@ public class MBModule {
             startUpPriority = StartUpPriority.DEFAULT;
         }
 
-        return new ModuleInfo(name, version, description, author, startUpPriority);
+        return new ModuleInfo(name, version, description, authors, dependencies, startUpPriority);
     }
 
     /**

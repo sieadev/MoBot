@@ -1,6 +1,8 @@
 package net.vitacraft.api.console;
 
 import net.vitacraft.MoBot;
+import net.vitacraft.api.config.ConfigLoader;
+import org.simpleyaml.configuration.ConfigurationSection;
 import org.slf4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,5 +62,18 @@ public class Console {
         registerCommand("clear", args -> ConsoleUtil.clearConsole());
         registerCommand("shutdown", args -> System.exit(0));
         registerCommand("stop", args -> System.exit(0));
+
+        registerCommand("settoken", args -> {
+            if (args.length == 0) {
+                logger.warn("No token provided.");
+                return;
+            }
+            String token = args[0];
+            ConfigLoader configLoader = new ConfigLoader("./bot.yml");
+            ConfigurationSection config = configLoader.getConfig();
+            config.set("token", token);
+            configLoader.save();
+            logger.info("Token set to: {}", token);
+        });
     }
 }
