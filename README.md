@@ -105,7 +105,8 @@ Last but not least your bot needs a `bot.yml` file in your `resources` directory
 name: WelcomeModule
 version: '${project.version}'
 description: A Test Module
-author: sieadev
+dependencies: [ANOTHER_MODULE]
+authors: [sieadev]
 priority: DEFAULT
 ```
 
