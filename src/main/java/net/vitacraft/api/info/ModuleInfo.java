@@ -1,5 +1,7 @@
 package net.vitacraft.api.info;
 
+import java.util.List;
+
 /**
  * The {@code ModuleInfo} class encapsulates information about a module, including
  * its name, version, description, author, and startup priority.
@@ -16,7 +18,7 @@ package net.vitacraft.api.info;
  * ModuleInfo moduleInfo = new ModuleInfo("ExampleModule", "1.0", "An example module", "John Doe", StartUpPriority.HIGH);
  * </pre>
  */
-public record ModuleInfo(String name, String version, String description, String author, StartUpPriority priority) {
+public record ModuleInfo(String name, String version, String description, List<String> authors, List<String> dependencies, StartUpPriority priority) {
     /**
      * Constructs a new {@code ModuleInfo} object with the specified name, version,
      * description, author, and startup priority.
@@ -24,7 +26,8 @@ public record ModuleInfo(String name, String version, String description, String
      * @param name        the name of the module
      * @param version     the version of the module
      * @param description a brief description of the module
-     * @param author      the author of the module
+     * @param authors      the authors of the module
+     * @param dependencies the dependencies of the module
      * @param priority    the startup priority of the module
      */
     public ModuleInfo {
