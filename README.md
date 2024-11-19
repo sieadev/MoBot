@@ -60,21 +60,17 @@ To create a module for MoBot, you need to extend the `MBModule` class. Below is 
 First, add the MoBot dependency to your `pom.xml`:
 
 ```xml
-<repositories>
-    <repository>
-        <id>rad-repo-public</id>
-        <name>rad's maven</name>
-        <url>https://maven.radsteve.net/public</url>
-    </repository>
-</repositories>
+<repository>
+  <id>pixel-services-releases</id>
+  <name>Pixel Services</name>
+  <url>https://maven.pixel-services.com/releases</url>
+</repository>
 
-<dependencies>
-    <dependency>
-        <groupId>net.vitacraft</groupId>
-        <artifactId>MoBot</artifactId>
-        <version>VERSION</version> <!-- Replace VERSION with the latest version -->
-    </dependency>
-</dependencies>
+<dependency>
+    <groupId>net.vitacraft</groupId>
+    <artifactId>MoBot</artifactId>
+    <version>VERSION</version> <!-- Replace VERSION with the latest version -->
+</dependency>
 ```
 
 Next, create a new class that extends `MBModule`. Here is an example:

@@ -22,8 +22,8 @@
 
     <distributionManagement>
         <repository>
-            <id>MoBotAPI</id>
-            <url>https://maven.radsteve.net/public</url>
+            <id>Pixel-Services</id>
+            <url>https://maven.pixel-services.com/releases</url>
         </repository>
     </distributionManagement>
 
