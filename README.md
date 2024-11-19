@@ -76,10 +76,6 @@ First, add the MoBot dependency to your `pom.xml`:
 Next, create a new class that extends `MBModule`. Here is an example:
 
 ```java
-package dev.siea;
-
-import net.vitacraft.api.MBModule;
-
 public class WelcomeModule extends MBModule {
     @Override
     public void onEnable() {
