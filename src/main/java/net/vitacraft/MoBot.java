@@ -10,18 +10,13 @@ import net.vitacraft.api.PrimitiveBotEnvironment;
 import net.vitacraft.api.classloader.ModuleLoader;
 import net.vitacraft.api.config.ConfigLoader;
 import net.vitacraft.api.console.Console;
-import net.vitacraft.api.console.ConsoleCommand;
 import net.vitacraft.exceptions.BotStartupException;
-import net.vitacraft.exceptions.CircularDependencyException;
 import net.vitacraft.manager.CommandManager;
 import net.vitacraft.api.console.ConsoleUtil;
-import net.vitacraft.utils.AnsiColorUtil;
 import org.simpleyaml.configuration.ConfigurationSection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.*;
 
 /**
@@ -53,7 +48,7 @@ public class MoBot {
         createModulesDirectory();
 
         // Load all modules
-        modules.addAll(ModuleLoader.loadModules("modules"));
+        modules.addAll(ModuleLoader.loadModules(System.getProperty("user.dir") + "/modules"));
         logger.info("Loaded MoBot modules: {}", modules.size());
 
         // Sort modules based on priority
