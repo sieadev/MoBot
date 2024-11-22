@@ -53,7 +53,7 @@ public class MoBot {
         createModulesDirectory();
 
         // Load all modules
-        modules.addAll(ModuleLoader.loadModules("modules"));
+        modules.addAll(ModuleLoader.loadModules(System.getProperty("user.dir") + "/modules"));
         logger.info("Loaded MoBot modules: {}", modules.size());
 
         // Sort modules based on priority
