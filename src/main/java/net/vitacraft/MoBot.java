@@ -17,6 +17,8 @@ import org.simpleyaml.configuration.ConfigurationSection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -33,6 +35,8 @@ public class MoBot {
     private Console console;
 
     public MoBot() {
+        Instant startTime = Instant.now();
+
         ConsoleUtil.clearConsole();
 
         // Initialize the Logger
@@ -99,6 +103,8 @@ public class MoBot {
 
         // Initialize the Console
         console = new Console(this);
+
+        logger.info("MoBot startup completed in {} seconds.", Duration.between(startTime, Instant.now()).toSeconds());
     }
 
     private DefaultShardManagerBuilder getBuilder() {
