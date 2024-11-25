@@ -1,6 +1,7 @@
 package net.vitacraft.api.classloader;
 
 import net.vitacraft.api.MBModule;
+import net.vitacraft.api.config.ModuleConfig;
 import net.vitacraft.exceptions.CircularDependencyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,13 +39,16 @@ public class ModuleLoader {
                         URL[] urls = new URL[]{jarFile.toURI().toURL()};
                         URLClassLoader classLoader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
 
-                        ServiceLoader<MBModule> serviceLoader = ServiceLoader.load(MBModule.class, classLoader);
-                        for (MBModule module : serviceLoader) {
-                            String moduleName = module.getClass().getName();
-                            moduleMap.put(moduleName, module);
-                            dependencyGraph.putIfAbsent(moduleName, new HashSet<>());
-                            ModuleConfigReader.readConfig(jarFile, moduleName, dependencyGraph);
+                        ModuleConfig moduleConfig = ModuleConfigReader.readConfig(jarFile);
+                        if (moduleConfig == null) {
+                            logger.warn("No valid module.yml found in {}", jarFile.getName());
+                            continue;
                         }
+
+                        Class<?> moduleClass = classLoader.loadClass(moduleConfig.getMainClass());
+                        MBModule module = (MBModule) moduleClass.getDeclaredConstructor().newInstance();
+
+                        modules.add(module);
                     } catch (Exception e) {
                         logger.error("Failed to load JAR file: {}", jarFile.getName(), e);
                     }
